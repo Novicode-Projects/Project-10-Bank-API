@@ -1,17 +1,14 @@
 import argentBankLogo from "../assets/argentBankLogo.png";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../sessionSlice";
 
 export const Header = () => {
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  console.log(user);
+  const dispatch = useDispatch();
+  const token = useSelector((state: unknown) => state.session.token);
 
   const handleLogout = () => {
-    console.log("Logout");
+    dispatch(logout());
   };
 
   return (
@@ -26,7 +23,7 @@ export const Header = () => {
           <h1 className="sr-only">Argent Bank</h1>
         </Link>
         <div>
-          {isAuthenticated ? (
+          {token ? (
             <>
               <div>
                 <Link className="main-nav-item" to="/user">

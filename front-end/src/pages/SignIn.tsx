@@ -1,6 +1,12 @@
 import { FormEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../sessionSlice";
+import { Navigate } from "react-router-dom";
 
 export const SignIn = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state: unknown) => state.session.token);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -25,8 +31,6 @@ export const SignIn = () => {
     })
       .then((response: Response) => {
         if (response.ok) {
-          console.log("ok");
-
           return response.json();
         }
 
@@ -34,20 +38,22 @@ export const SignIn = () => {
       })
       .then((data) => {
         console.log("data");
-
-        console.log(data);
+        dispatch(login({ token: data.body.token }));
       })
       .catch((error) => {
         console.log("error");
-
         console.log(error);
       });
 
     console.log("submit");
   };
 
+  if (token) {
+    return <Navigate to="/user" replace />;
+  }
+
   return (
-    <main className="main bg-dark">
+    <main className="flex flex-col items-center h-screen main bg-dark">
       <section className="sign-in-content">
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
